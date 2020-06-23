@@ -1,6 +1,8 @@
 <template>
     
-    <lightning-button variant="destructive-text" label="Delete accounts" title="Delete accounts" onclick={handleClick} class="slds-m-left_x-small"></lightning-button>
+    <lightning-button variant="destructive" 
+    label="Delete"
+    icon-name="utility:delete" onclick={handleClick} class="slds-m-left_x-small"></lightning-button>
     <lightning-datatable key-field="id" data={parameters.data} columns={columns}>
     </lightning-datatable>
 </template>

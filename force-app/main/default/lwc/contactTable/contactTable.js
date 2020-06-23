@@ -1,5 +1,5 @@
-import { LightningElement, track, wire } from 'lwc';
-
+import { LightningElement, track, wire, api } from 'lwc';
+import { ShowToastEvent } from 'lightning/platformShowToastEvent';
 import contacts from '@salesforce/apex/contactTable.fetchContacts';
 import deleteContacts from '@salesforce/apex/contactTable.deleteContacts';
 
@@ -21,17 +21,23 @@ export default class ContactTable extends LightningElement {
     @track columns = columns;
     @wire(contacts) parameters; 
 
-
     handleClick(event){
+        var ids = [];   
         var datatable = this.template.querySelector('lightning-datatable');
         var selected = datatable.getSelectedRows();
-        var ids = [];
         for (var row in selected){
-            ids.push(selected[row].id);
+            ids.push(selected[row].contactId);
         }
-        deleteContacts({ids: '$ids'}).catch(error => {
+        deleteContacts({ids: ids}).then(() => {this.dispatchEvent(
+            new ShowToastEvent({
+                title: 'Success',
+                message: 'Records deleted',
+                variant: 'success'
+                })
+            );
+        })
+        .catch(error => {
             console.error(error);
         });
-        
     }
 }   
