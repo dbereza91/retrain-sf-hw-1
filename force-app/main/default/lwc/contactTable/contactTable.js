@@ -1,24 +1,17 @@
-import { LightningElement, track, wire, api } from 'lwc';
+import { LightningElement, track, wire} from 'lwc';
 import { ShowToastEvent } from 'lightning/platformShowToastEvent';
+import { refreshApex } from '@salesforce/apex';
 import contacts from '@salesforce/apex/contactTable.fetchContacts';
 import deleteContacts from '@salesforce/apex/contactTable.deleteContacts';
 
-const columns = [{
-    label: 'Name',
-    fieldName: 'name'
-    },
-    {
-    label: 'Email',
-    fieldName: 'email'
-    },
-    {
-    label: 'Account Name',
-    fieldName: 'accountName'
-    },
-    ]
+const COLUMNS = [
+    { label: 'Contact Name', fieldName: 'name', type: 'text' },
+    { label: 'Email', fieldName: 'email', type: 'text' },
+    { label: 'Account Name', fieldName: 'accountName', type: 'text' }
+];
 
 export default class ContactTable extends LightningElement {
-    @track columns = columns;
+    @track columns = COLUMNS;
     @wire(contacts) parameters; 
 
     handleClick(event){
@@ -28,13 +21,14 @@ export default class ContactTable extends LightningElement {
         for (var row in selected){
             ids.push(selected[row].contactId);
         }
-        deleteContacts({ids: ids}).then(() => {this.dispatchEvent(
+        deleteContacts({contactIds: ids}).then(() => {this.dispatchEvent(
             new ShowToastEvent({
                 title: 'Success',
-                message: 'Records deleted',
+                message: 'Records deleted ' + ids,
                 variant: 'success'
                 })
             );
+            return refreshApex(contacts);
         })
         .catch(error => {
             console.error(error);
