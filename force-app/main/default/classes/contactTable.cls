@@ -1,4 +1,4 @@
-public with sharing class contactTable {
+public with sharing class ContactTable {
 
     @AuraEnabled(cacheable = true)
     public static List<ContactWrapper> fetchContacts() {

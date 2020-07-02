@@ -28,10 +28,11 @@ export default class ContactTable extends LightningElement {
                 variant: 'success'
                 })
             );
-            return refreshApex(contacts);
+            datatable.selectedRows = [];
+            return refreshApex(this.parameters);
         })
         .catch(error => {
             console.error(error);
         });
     }
-}   
+}
